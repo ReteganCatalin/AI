@@ -18,7 +18,7 @@ def read_input_from_file(pick):
             #print(row)
             for letter in row[0]:
                 if letter not in key_dict.keys():
-                    key_dict[letter]=numpy.random.randint(0,16)
+                    key_dict[letter]=0
             array.append(row[0])
             if ok==False:
                 array.append(row[1])
@@ -37,10 +37,12 @@ def do_op(first_op,second_op,operand):
     else:
         #print("value:")
         return first_op==second_op
-def solve_system(pick):
-    arith_tuple=read_input_from_file(pick)
+def solve_system(arith_tuple):
+    
     operations=arith_tuple[0]
     letter_dict=arith_tuple[1]
+    for letter in letter_dict.keys():
+        letter_dict[letter]=numpy.random.randint(0,16)
     i=0
     value=0
     keep=""
@@ -77,8 +79,9 @@ print("Which problem 1 to 5")
 pick=int(input())
 ok=False
 trials=1
-while ok==False and trials<1000000:
-    ok=solve_system(pick)
+arith_tuple=read_input_from_file(pick)
+while ok==False and trials<10000000:
+    ok=solve_system(arith_tuple)
     #print(ok)
     trials+=1
 if ok==False:
