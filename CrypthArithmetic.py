@@ -65,7 +65,7 @@ def solve_system(arith_tuple):
             #print(value)
             value=do_op(value,prod,op)
             op=index
-            keep+=str(value)+op
+            keep+=str(prod)+op
             
         i+=1
     keep+=str(prod)
@@ -73,16 +73,21 @@ def solve_system(arith_tuple):
     #print("Ending...")
     if value==True:
         print(keep)
+        print(operations,letter_dict)
     return value
-numpy.random.seed()
-print("Which problem 1 to 5")
-pick=int(input())
-ok=False
-trials=1
-arith_tuple=read_input_from_file(pick)
-while ok==False and trials<10000000:
-    ok=solve_system(arith_tuple)
-    #print(ok)
-    trials+=1
-if ok==False:
-    print("No solution in 1000000 trials")
+def CrypthArithmeticStart():
+    numpy.random.seed()
+    print("Which problem 1 to 5")
+    pick=int(input())
+    ok=False
+    trials=1
+    arith_tuple=read_input_from_file(pick)
+    print("NumOfAttempts")
+    attempts=int(input())
+    while ok==False and trials<attempts:
+        ok=solve_system(arith_tuple)
+        if ok==True:
+            print("Checked in trial: ",trials)
+        trials+=1
+    if ok==False:
+        print("No solution in ",attempts," trials")

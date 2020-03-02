@@ -81,11 +81,12 @@ def complete_sudoku(pick):
             i=i+1
         ok=check_function(sudoku,pick)
         if ok==True:
+            print("In trial: ",trials)
             for i in range(0,pick*pick):
                 if i%pick==0:
                     print()
                 print(sudoku[i],end=",")
-                
+            print()
             return 
         trials+=1
     if ok==False:
