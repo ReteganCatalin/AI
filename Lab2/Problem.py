@@ -48,7 +48,8 @@ class Problem():
     
     def Heuristic(self):
         First_State=self.ProgressingStates.pop(0)
-        Next_States=First_State.NextStates()
+        Next_States=First_State.NextStatesGreedy()
+        #print(Next_States)
         MostPowerfulState=Next_States[0]
         for New_State in Next_States:
             if HeuristicComputation(New_State)>HeuristicComputation(MostPowerfulState):

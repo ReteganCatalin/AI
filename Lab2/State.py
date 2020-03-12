@@ -52,6 +52,16 @@ class State:
                         next_states.append(New_State)
         return next_states
     
+    def NextStatesGreedy(self):
+        next_states=list()
+        for index_row in range(0,self.__size):
+            for index_column in range(0,self.__size):
+                point=(index_row,index_column)
+                if point not in self.__values:
+                    New_State=self.NewState(point)
+                    next_states.append(New_State)
+        return next_states
+    
     def CheckCorrectState(self):
         line=[0 for i in range(0,self.__size)]
         column=[0 for i in range(0,self.__size)]
@@ -132,6 +142,6 @@ def HeuristicComputation(State):
         else:
             for index2 in range(index+1,length):
                 if (abs(point[0]-values[index2][0])- abs(point[1]-values[index2][1]))==0:
-                    power=-2000
+                    power-=2000
     return power
     
