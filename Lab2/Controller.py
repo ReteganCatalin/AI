@@ -23,7 +23,9 @@ class Controller():
                 
     
     def Greedy(self):
-        return
+        while self.Problem.IsGreedyEnd()!=True:
+            self.Problem.Heuristic()
+        return self.Problem.ReturnProgress()
     
     
         

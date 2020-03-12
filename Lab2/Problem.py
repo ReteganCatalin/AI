@@ -4,7 +4,7 @@ Created on Thu Mar 12 12:58:22 2020
 
 @author: Catalin
 """
-from State import State
+from State import State,HeuristicComputation
 class Problem():
     
     def __init__(self):
@@ -38,10 +38,24 @@ class Problem():
             return True
         else:
             return False
+    def IsGreedyEnd(self):
+        return self.ProgressingStates[0].IsFull()
+    
             
     def ReturnFinalStates(self):
         return self.FinalStates
             
     
     def Heuristic(self):
-        return 
+        First_State=self.ProgressingStates.pop(0)
+        Next_States=First_State.NextStates()
+        MostPowerfulState=Next_States[0]
+        for New_State in Next_States:
+            if HeuristicComputation(New_State)>HeuristicComputation(MostPowerfulState):
+                MostPowerfulState.setStateValues(New_State.getStateValues())
+        self.ProgressingStates.append(MostPowerfulState)
+        
+    def ReturnProgress(self):
+        return self.ProgressingStates
+            
+                

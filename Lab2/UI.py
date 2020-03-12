@@ -21,11 +21,19 @@ class Menu():
                 pick=input()
                 if pick=='1':
                     FinalStates=self.Controller.DFS()
+                    if len(FinalStates)!=0:
+                        print("Correct States:")
+                        for State in FinalStates:
+                            print(State)
+                    else:
+                        print("No Solution Found !")
                 else:
-                    FinalStates=self.Controller.Greedy()
-                print("Correct States")
-                for State in FinalStates:
-                    print(State)
+                    FinalState=self.Controller.Greedy()                
+                    if FinalState[0].CheckCorrectState()==True:
+                        print("Correct Final State")
+                    else:
+                        print("Incorrect final state")
+                    print(FinalState[0])
             else:
                 return 
             
