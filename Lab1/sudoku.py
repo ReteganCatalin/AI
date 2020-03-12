@@ -12,7 +12,7 @@ def check_function(sudoku,value):
     i=0
     line=[]
     columns=[[] for j in range(value)]
-    square=[[],[],[]]
+    square=[[] for i in range(math.sqrt(value))]
     while i<value*value:
         if i%(value*math.sqrt(value))==0:
             square[0].clear()
@@ -94,25 +94,17 @@ def complete_sudoku(pick):
     
 def read_input(value):
     array=[]
-    if value==4:
-        with open("C:\\Users\\Catalin\\Desktop\\Faculty\\AI\\sudoku4.txt") as csv_file:
-            csv_reader=csv.reader(csv_file,delimiter=',')
-            for row in csv_reader:
-                print(row)
-                i=0
-                while i<=15:
-                    array.append(int(row[i]))
-                    i=i+1
-    else:
-        with open("C:\\Users\\Catalin\\Desktop\\Faculty\\AI\\sudoku9.txt") as csv_file:
-            csv_reader=csv.reader(csv_file,delimiter=',')
-            for row in csv_reader:
-                print(row)
-                i=0
-                while i<=80:
-                    array.append(int(row[i]))
-                    i=i+1
-    print(array)
+    with open("C:\\Users\\Catalin\\.spyder-py3\\sudoku"+str(value)+".txt") as csv_file:
+        csv_reader=csv.reader(csv_file,delimiter=',')
+        for row in csv_reader:
+            #print(row)
+            i=0
+            prod=value*value
+            while i<prod:
+                array.append(int(row[i]))
+                i=i+1
+
+    #print(array)
     return array
 def SudokuStart():             
     numpy.random.seed()
