@@ -45,13 +45,15 @@ class Problem():
     def ReturnFinalStates(self):
         return self.FinalStates
             
-    
-    def Heuristic(self):
+    def ExpandGreedy(self):
         First_State=self.ProgressingStates.pop(0)
         Next_States=First_State.NextStatesGreedy()
-        #print(Next_States)
-        MostPowerfulState=Next_States[0]
         for New_State in Next_States:
+            self.ProgressingStates.append(New_State)
+    def Heuristic(self):
+        MostPowerfulState=self.ProgressingStates.pop(0)
+        while len(self.ProgressingStates)!=0:
+            New_State=self.ProgressingStates.pop(0)
             if HeuristicComputation(New_State)>HeuristicComputation(MostPowerfulState):
                 MostPowerfulState.setStateValues(New_State.getStateValues())
         self.ProgressingStates.append(MostPowerfulState)

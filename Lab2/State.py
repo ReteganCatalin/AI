@@ -86,7 +86,6 @@ class State:
         new_state=State()
         Copy=copy.deepcopy(self.__values)
         Copy.append(point)
-        
         new_state.setStateValues(Copy)
         new_state.setSize(self.__size)
         return new_state
