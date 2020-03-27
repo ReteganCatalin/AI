@@ -10,7 +10,10 @@ from Repository import PSORepository,Repository
 class Controller():
     def __init__(self,n,population,nrOfIterations,pM ):
         self.__Repository=Repository(n,population,nrOfIterations,pM)
+      
         
+    def reinitializeController(self,n,population,nrOfIterations,pM ):
+        self.__Repository=Repository(n,population,nrOfIterations,pM)
     def NextIteration(self):
         self.__Repository.NextIteration()
         
@@ -30,11 +33,16 @@ class Controller():
         return self.__Repository.NextClimb()
 
 class PSOController():
-    def __init__(self,n,population,nrOfIterations,cognitiveLearn,socialLearn,inertia):
-        self.__Repository=PSORepository(n,population,nrOfIterations,cognitiveLearn,socialLearn,inertia)
+    def __init__(self,n,population,nrOfIterations,neighbours,cognitiveLearn,socialLearn,inertia):
+        self.__Repository=PSORepository(n,population,nrOfIterations,neighbours,cognitiveLearn,socialLearn,inertia)
+      
         
+    def reinitializeController(self,n,population,nrOfIterations,neighbours,cognitiveLearn,socialLearn,inertia):
+        self.__Repository=PSORepository(n,population,nrOfIterations,neighbours,cognitiveLearn,socialLearn,inertia)
     def getNumberOfIterations(self):
         return self.__Repository.getNumberOfIterations()
+    def recomputeInertiaCoefficient(self,index):
+        return self.__Repository.recomputeInertiaCoefficient(index)
     
     def getMinFitness(self):
         return self.__Repository.getFitnessMinimForEachState()

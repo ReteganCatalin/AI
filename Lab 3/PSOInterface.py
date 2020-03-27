@@ -9,6 +9,8 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import (QWidget, QFormLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout)
 import pyqtgraph as pq
 from Controller import PSOController
+from Plotting import PlottingPSOThread
+
 
 class PSOInterface(QWidget):
     def __init__(self):
@@ -17,6 +19,8 @@ class PSOInterface(QWidget):
         
 
     def initUI(self):
+        self.plotThread = PlottingPSOThread()
+        self.plotThread.start()
         self.formGroupBox = QGroupBox("Particle Swarm Optimization Options:")
         layout = QFormLayout()
         
@@ -29,12 +33,9 @@ class PSOInterface(QWidget):
         
         self.populationLabel = QLabel("Population:")
         self.populationInput = QLineEdit()
-
-        self.minimumLabel = QLabel("Minimum boundary:")
-        self.minimumInput = QLineEdit()
-
-        self.maximumLabel = QLabel("Maximum boundary:")
-        self.maximumInput = QLineEdit()
+        
+        self.neighbourLabel = QLabel("Neighbours number:")
+        self.neighbourInput = QLineEdit()    
 
         self.cognitiveLearningLabel = QLabel("Cognitive learning coefficient")
         self.cognitiveLearningInput = QLineEdit()
@@ -42,11 +43,12 @@ class PSOInterface(QWidget):
         self.socialLearningLabel = QLabel("Social learning coefficient")
         self.socialLearningInput = QLineEdit()
         
-        self.inertiaLabel = QLabel("Inertia coefficieni")
+        self.inertiaLabel = QLabel("Inertia coefficient")
         self.inertiaInput = QLineEdit()
         
         layout.addRow(self.permutationLabel, self.permutationInput)
         layout.addRow(self.populationLabel, self.populationInput)
+        layout.addRow(self.neighbourLabel, self.neighbourInput)
         layout.addRow(self.iterationNumberLabel, self.iterationNumberInput)
         layout.addRow(self.cognitiveLearningLabel, self.cognitiveLearningInput)
         layout.addRow(self.socialLearningLabel, self.socialLearningInput)
@@ -75,13 +77,14 @@ class PSOInterface(QWidget):
         print("Swarming starting")
         self.graphWindow.show()
         permutationNumber = int(self.permutationInput.text())
-        population= int(self.permutationInput.text())
+        population= int(self.populationInput.text())
         iterationNumber = int(self.iterationNumberInput.text())
-        cognitiveLearning = int(self.cognitiveLearningInput.text())
-        socialLearning = int(self.socialLearningInput.text())
-        inertia= int(self.inertiaInput.text())
+        neighbours=int(self.neighbourInput.text())
+        cognitiveLearning = float(self.cognitiveLearningInput.text())
+        socialLearning = float(self.socialLearningInput.text())
+        inertia= float(self.inertiaInput.text())
         
-        self.controller=PSOController(permutationNumber,population,iterationNumber,cognitiveLearning,socialLearning,inertia)
+        self.controller=PSOController(permutationNumber,population,iterationNumber,neighbours,cognitiveLearning,socialLearning,inertia)
         self.thread = self.WorkerThread(self.controller)
         self.thread.addGenerationSignal.connect(self.displayGraph)
         self.thread.start()
@@ -134,21 +137,28 @@ class PSOInterface(QWidget):
 
         def run(self):
             
-            bestIndividualOfEachGeneration = []
+            bestIndividualsOfEachGeneration = []
             numericalListOfIndividuals = []
-
             for index in range(self.workerController.getNumberOfIterations()):
-                print("Current generation: " + str(index))
-                bestIndividualOfEachGeneration.append(self.workerController.getLastFitness())
-                numericalListOfIndividuals.append(index)
-                self.addGenerationSignal.emit(bestIndividualOfEachGeneration,numericalListOfIndividuals)
-                ok=self.workerController.NextClimb()
-                if ok==False:
-                    bestIndividualFitness =self.workerController.getLastFitness()
-                    bestIndividualOfEachGeneration.append(self.workerController.getLastFitness())
-                    numericalListOfIndividuals.append(index)
-                    self.addGenerationSignal.emit(bestIndividualOfEachGeneration,numericalListOfIndividuals)
-                    print("The best at least local minimum " + str(bestIndividualFitness) + " found in iteration number: " + str(index))
+                if self.shouldContinue is not True:
                     return
-            bestIndividualFitness =self.workerController.getLastFitness()
-            print("The best individual fitness found is " + str(bestIndividualFitness))
+                if index % 10 == 0:
+                    #print("Current generation: " + str(index))
+                    if index%300==0:
+                        self.workerController.recomputeInertiaCoefficient(7)
+                    BestIndividualOfThisGenerations=self.workerController.getMinFitness()
+                    bestIndividualsOfEachGeneration.append(BestIndividualOfThisGenerations[len(BestIndividualOfThisGenerations)-1])
+                    numericalListOfIndividuals.append(index)
+                    self.addGenerationSignal.emit(bestIndividualsOfEachGeneration,numericalListOfIndividuals)
+                
+                self.workerController.NextIteration()
+                
+            BestIndividualOfThisGenerations=self.workerController.getMinFitness()
+            bestIndividualsOfEachGeneration.append(BestIndividualOfThisGenerations[len(BestIndividualOfThisGenerations)-1])
+            numericalListOfIndividuals.append(self.workerController.getNumberOfIterations())
+            self.addGenerationSignal.emit(bestIndividualsOfEachGeneration,numericalListOfIndividuals)
+            bestIndividuals =self.workerController.getMinFitness()
+            bestIndividual=bestIndividuals[len(bestIndividuals)-1]
+            print("The best individual fitness is " + str(bestIndividual))
+            print("\n\n\n")
+            print(bestIndividualsOfEachGeneration)

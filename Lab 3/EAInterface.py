@@ -9,6 +9,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import (QWidget, QFormLayout, QGroupBox, QLabel, QLineEdit, QPushButton, QVBoxLayout)
 import pyqtgraph as pq
 from Controller import Controller
+from Plotting import PlottingEAThread
 
 class EAInterface(QWidget):
 
@@ -18,6 +19,9 @@ class EAInterface(QWidget):
         
 
     def initUI(self):
+        
+        self.plotThread = PlottingEAThread()
+        self.plotThread.start()
         self.formGroupBox = QGroupBox("Evolutionary Algorithm Options:")
         layout = QFormLayout()
         
