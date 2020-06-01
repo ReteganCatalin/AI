@@ -1,0 +1,50 @@
+Lab 10 – The furnace Problem
+Description
+
+The project is composed from 6 modules, as following:
+- The regions of temperature(cold, cool, moderate,hot, very hot) and capacity(small, medium, high) and power(small,medium,high) as presented in Fig1, Fig2 and Fig3, with their specific parameters which are used to calculate the value of µ function for them in every rule are represented in TriangularRegion and TrapezoidalRegion.
+- Rule contains all the information needed for a certain rule ( temperature + capacity => the power which is one of {small, medium, high}).
+- The Problem module is used to initialize all the problem’s data, reading from temperature.in, capacity.in, power.in, rules.in.
+- The concrete algorithm is in Controller module, namely the function solve(), Fuzzify() and Defuzzify(). 
+ Let Temp be temperature and Cap capacity. 	
+ We use Mamdani approach, so the output of each rule is a fuzzy set, which is derived from µ function of temperature and capacity.
+ These output fuzzy sets are combined into a single fuzzy set in the end(if needed).
+ We take every rule (each pair of {temperature, capacity})  and compute the corresponding µ(Temp) and µ(Cap), according to their regions (triangular or trapezoidal), and the result fuzzy set is the area on the graph under the minimum of µ(Temp) and µ(Cap).
+ We repeat this for every rule, and in the end we defuzzify our results, determining the Centroid Area(COA).
+ We sum all the points(integer values) for which the power in defined in our graph(0-20) multiplied by the value obtained after computing the rules for that region.
+ If the point does not reach the rule value when intersecting the graph, it is multiplied by the maximum value possible.
+ To get the final result, we divide this sum by the sum of the values with which we multiplied the points(weighted sum). 
+
+Case 1. Temperature = 50 and Capacity = 4:
+	R1 cold + small => small 
+		µ(Temp = 50) = max{0, min{(50 – 20) / (20 – 20), 1, (50 – 50) / (50 – 30)}} = max{0, min{infinity, 1, 0}} = max{0, 0} = 0.
+		µ(Cap = 4) = max{0, min{(4-0)/(0-0), 1, 5-4/5-0}} = max{0, min{infinity, 1, 0.2}} = max{0, 0.2} = 0.2
+	The fuzzy set is determined by the area from the graph below value min{µ(Temp), µ(Cap)} = 0
+	R2 cold + medium => medium
+		µ(Temp = 50) = max{0, min{(50 – 20) / (20 – 20), 1, (50 – 50) / (50 – 30)}} = max{0, min{infinity, 1, 0}} = max{0, 0} = 0.
+		µ(Cap = 4) = max{0, min{4-3/5-3, 1, 7-4/7-5}} = max{0,min(1/2,1,3/2) } = 1/2 = 0.5
+	The fuzzy set is determined by the area from the graph below value min{µ(Temp), µ(Cap)}=0
+	R4 cool + small => small
+		µ(Temp = 50) = max{0, min{50-30/50-30, 1, 70-50/70-50}} = 1
+		µ(Cap = 4) = 0.2
+	The fuzzy set is determined by the area from the graph below value min{µ(Temp), µ(Cap)}=0.2
+	R5 cool + medium => medium
+		µ(T = 50) = max{0, min{50-30/50-30, 1, 70-50/70-50}} = 1
+		µ(Cap = 4) = max{0, min{4-3/5-3, 1, 7-4/7-5}} = max{0,min(1/2,1,3/2) } = 1/2 = 0.5
+	The fuzzy set is determined by the area from the graph below value min{µ(Temp), µ(Cap)}=0.5
+All R1, R2, …, R15 have the result fuzzy set determined by 0, except R4 and R5.
+After computing the COA( we use weighted sums from 0->20 with the weight being the max value we get in that part of the graph for the power Figure)
+We have for the small part point_val=max{min{0.2,the value from the small graph in the point_pos },min{0.5,the value from the medium graph in the point_pos}}, we obtain power = 8.16
+
+Case 2. Temperature = 120 and Capacity = 6:
+	R14. very hot + medium => small
+		µ(Temp = 120) = max{0, min{(120 – 90) / (110 – 90), 1, (120 – 120) / (120 – 120)}} = max{0, min{3/2, 1, ?}} = max{0, 1} = 1.
+		µ(Cap = 6) = max{0, min{6-3/5-3, 1, 7-6/7-5}} = max{0,min(3/2,1,1/2) } = 1/2 = 0.5
+	The fuzzy set is determined by the area from the graph below value min{µ(Temp), µ(Cap)}=0.5
+	R15. very hot + high => small
+		µ(Temp = 120) = max{0, min{(120 – 90) / (110 – 90), 1, (120 – 120) / (120 – 120)}} = max{0, min{3/2, 1, ?}} = max{0, 1} = 1.
+		µ(Cap = 6) = max{0, min{6-5/10-5, 1, 10-6/10-10}} = max{0,min{1/5,1,infinity}} = {0,0.2}=0.2 
+	The fuzzy set is determined by the area from the graph below value min{µ(Temp), µ(Cap)}=0.2
+All R1, R2, …, R15 have the result fuzzy set determined by 0, except R15 and R14 .
+After computing the COA( we use weighted sums from 0->20 with the weight being the max value we get in that part of the graph for the power Figure)
+We have for the small part point_val=max{min{0.2,the value from the small graph in the point_pos },min{0.5,the value from the small graph in the point_pos}}, we obtain power = 3.625 
